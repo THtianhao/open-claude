@@ -1,0 +1,57 @@
+{
+  "name": "claude-code-source-snapshot",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "open-claude": "bin/open-claude"
+  },
+  "scripts": {
+    "start": "CLAUDE_CODE_BYPASS_AUTH=1 CLAUDE_CODE_USE_OPENAI=1 OPEN_CLAUDE_FORCE_INTERACTIVE=1 CLAUDE_CONFIG_DIR=$HOME/.open-claude ~/.bun/bin/bun --define 'MACRO.VERSION=\"1.0.0\"' --define 'MACRO.BUILD_TIME=\"unknown\"' --define 'MACRO.PACKAGE_URL=\"@anthropic-ai/claude-code\"' --define 'MACRO.NATIVE_PACKAGE_URL=\"@anthropic-ai/claude-code\"' --define 'MACRO.FEEDBACK_CHANNEL=\"#claude-code\"' --define 'MACRO.ISSUES_EXPLAINER=\"report issues in your local fork\"' --define 'MACRO.VERSION_CHANGELOG={}' src/entrypoints/cli.tsx",
+    "help": "~/.bun/bin/bun src/entrypoints/cli.tsx --help"
+  },
+  "dependencies": {
+    "@anthropic-ai/sandbox-runtime": "^0.0.44",
+    "@anthropic-ai/sdk": "latest",
+    "@commander-js/extra-typings": "latest",
+    "@growthbook/growthbook": "^1.6.5",
+    "@modelcontextprotocol/sdk": "latest",
+    "@opentelemetry/api": "latest",
+    "@opentelemetry/api-logs": "latest",
+    "@opentelemetry/core": "latest",
+    "@opentelemetry/resources": "^2.6.1",
+    "@opentelemetry/sdk-logs": "^0.214.0",
+    "axios": "latest",
+    "bidi-js": "^1.0.3",
+    "chalk": "latest",
+    "chokidar": "latest",
+    "diff": "^8.0.4",
+    "env-paths": "^4.0.0",
+    "execa": "latest",
+    "figures": "latest",
+    "fuse.js": "latest",
+    "highlight.js": "^11.11.1",
+    "https-proxy-agent": "latest",
+    "ignore": "latest",
+    "ink": "latest",
+    "jsonc-parser": "^3.3.1",
+    "lodash-es": "latest",
+    "lru-cache": "latest",
+    "marked": "^17.0.5",
+    "p-map": "^7.0.4",
+    "picomatch": "^4.0.4",
+    "qrcode": "^1.5.4",
+    "react": "latest",
+    "semver": "^7.7.4",
+    "strip-ansi": "latest",
+    "supports-hyperlinks": "^4.4.0",
+    "tree-kill": "^1.2.2",
+    "type-fest": "^5.5.0",
+    "usehooks-ts": "^3.1.1",
+    "xss": "^1.0.15",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "typescript": "latest"
+  }
+}

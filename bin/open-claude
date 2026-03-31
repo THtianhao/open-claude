@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Resolve symlinks so REPO_DIR points to the real repo, not ~/.local/bin
+_SCRIPT="$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || realpath "${BASH_SOURCE[0]}" 2>/dev/null || echo "${BASH_SOURCE[0]}")"
+REPO_DIR="$( cd "$( dirname "$_SCRIPT" )/.." && pwd )"
+ENTRYPOINT="$REPO_DIR/src/entrypoints/cli.tsx"
+BUN_BIN="${BUN_BIN:-$HOME/.bun/bin/bun}"
+KEY_FILE="${OPEN_CLAUDE_OPENAI_KEY_FILE:-$HOME/.open_claude_openai_key}"
+export CLAUDE_CODE_BYPASS_AUTH=1
+export CLAUDE_CODE_USE_OPENAI=1
+export OPEN_CLAUDE_FORCE_INTERACTIVE=1
+# Isolate config from official Claude Code (~/.claude.json / ~/.claude/)
+export CLAUDE_CONFIG_DIR="$HOME/.open-claude"
+
+if [ ! -x "$BUN_BIN" ]; then
+  echo "Bun not found at $BUN_BIN" >&2
+  exit 1
+fi
+
+if [ -z "${OPENAI_API_KEY:-}" ]; then
+  if [ -f "$KEY_FILE" ]; then
+    OPENAI_API_KEY="$(tr -d '\r\n' < "$KEY_FILE")"
+  fi
+fi
+
+if [ -z "${OPENAI_API_KEY:-}" ]; then
+  if [ -t 0 ]; then
+    printf "Please enter your OpenAI API key: "
+    IFS= read -r -s OPENAI_API_KEY
+    printf "\n"
+    if [ -z "${OPENAI_API_KEY:-}" ]; then
+      echo "OpenAI API key is required." >&2
+      exit 1
+    fi
+    umask 177
+    printf "%s\n" "$OPENAI_API_KEY" > "$KEY_FILE"
+  else
+    echo "OPENAI_API_KEY is required. Run 'open-claude' in interactive mode to save it once." >&2
+    exit 1
+  fi
+fi
+
+export OPENAI_API_KEY
+
+CMD=(
+  "$BUN_BIN"
+  --define 'MACRO.VERSION="1.0.0"'
+  --define 'MACRO.BUILD_TIME="unknown"'
+  --define 'MACRO.PACKAGE_URL="@anthropic-ai/claude-code"'
+  --define 'MACRO.NATIVE_PACKAGE_URL="@anthropic-ai/claude-code"'
+  --define 'MACRO.FEEDBACK_CHANNEL="#claude-code"'
+  --define 'MACRO.ISSUES_EXPLAINER="report issues in your local fork"'
+  --define 'MACRO.VERSION_CHANGELOG={}'
+  "$ENTRYPOINT"
+  "$@"
+)
+
+exec "${CMD[@]}"

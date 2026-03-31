@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+
+# Environment / secrets
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Logs / debug
+*.log
+/tmp/open-claude-*.log
